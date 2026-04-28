@@ -1,0 +1,204 @@
+import React from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Pressable,
+  SafeAreaView,
+  ScrollView,
+} from 'react-native';
+import { useRouter } from 'expo-router';
+import { FontAwesome5 } from '@expo/vector-icons';
+import { theme } from '../constants/theme';
+
+interface ActionOption {
+  id: string;
+  name: string;
+  description: string;
+  icon: string;
+  color: string;
+}
+
+const ACTION_OPTIONS: ActionOption[] = [
+  {
+    id: 'notificacion',
+    name: 'Enviar notificación',
+    description: 'Muestra una notificación push en el dispositivo',
+    icon: 'bell',
+    color: '#3b82f6',
+  },
+  {
+    id: 'mensaje',
+    name: 'Mostrar mensaje',
+    description: 'Muestra un mensaje en pantalla',
+    icon: 'comment',
+    color: '#10b981',
+  },
+  {
+    id: 'sonido',
+    name: 'Reproducir sonido',
+    description: 'Emite un tono o sonido personalizado',
+    icon: 'volume-up',
+    color: '#f59e0b',
+  },
+  {
+    id: 'completado',
+    name: 'Marcar como completado',
+    description: 'Marca una tarea o automatización como hecha',
+    icon: 'check-circle',
+    color: '#6366f1',
+  },
+  {
+    id: 'abrir-link',
+    name: 'Abrir enlace',
+    description: 'Abre una URL en el navegador o en una app',
+    icon: 'link',
+    color: '#8b5cf6',
+  },
+];
+
+export default function SeleccionarAccionScreen() {
+  const router = useRouter();
+
+  return (
+    <SafeAreaView style={styles.safeArea}>
+      <View style={styles.header}>
+        <Pressable onPress={() => router.back()} style={styles.backButton}>
+          <FontAwesome5 name="chevron-left" size={16} color={theme.colors.textPrimary} />
+        </Pressable>
+        <Text style={styles.headerTitle}>Seleccionar acción</Text>
+        <View style={styles.headerSpacer} />
+      </View>
+
+      <ScrollView
+        style={styles.scroll}
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+      >
+        <Text style={styles.subtitle}>Elige qué hará tu automatización</Text>
+
+        <View style={styles.listContainer}>
+          {ACTION_OPTIONS.map((item, index) => {
+            const isFirst = index === 0;
+            const isLast = index === ACTION_OPTIONS.length - 1;
+
+            return (
+              <Pressable
+                key={item.id}
+                style={[
+                  styles.listItem,
+                  isFirst && styles.listItemFirst,
+                  isLast && styles.listItemLast,
+                ]}
+                onPress={() => router.replace(`/configurar/${item.id}`)}
+              >
+                <View style={[styles.iconCircle, { backgroundColor: item.color + '14' }]}>
+                  <FontAwesome5 name={item.icon as any} size={16} color={item.color} />
+                </View>
+
+                <View style={styles.itemContent}>
+                  <Text style={styles.itemName}>{item.name}</Text>
+                  <Text style={styles.itemDescription}>{item.description}</Text>
+                </View>
+
+                <FontAwesome5 name="chevron-right" size={12} color={theme.colors.textMuted} />
+              </Pressable>
+            );
+          })}
+        </View>
+      </ScrollView>
+    </SafeAreaView>
+  );
+}
+
+const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: theme.colors.background,
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: theme.spacing.lg,
+    paddingVertical: theme.spacing.md,
+    borderBottomWidth: 1,
+    borderBottomColor: theme.colors.borderLight,
+  },
+  backButton: {
+    width: 36,
+    height: 36,
+    borderRadius: theme.borderRadius.md,
+    backgroundColor: theme.colors.surface,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  headerTitle: {
+    fontSize: 17,
+    fontWeight: '600',
+    color: theme.colors.textPrimary,
+    letterSpacing: -0.3,
+  },
+  headerSpacer: {
+    width: 36,
+  },
+  scroll: {
+    flex: 1,
+  },
+  scrollContent: {
+    padding: theme.spacing.lg,
+    paddingBottom: theme.spacing.xxl,
+  },
+  subtitle: {
+    fontSize: 15,
+    color: theme.colors.textSecondary,
+    marginBottom: theme.spacing.lg,
+    letterSpacing: -0.2,
+  },
+  listContainer: {
+    backgroundColor: theme.colors.surface,
+    borderRadius: theme.borderRadius.lg,
+    borderWidth: 1,
+    borderColor: theme.colors.borderLight,
+    overflow: 'hidden',
+  },
+  listItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: theme.spacing.lg,
+    paddingVertical: theme.spacing.md,
+    borderBottomWidth: 1,
+    borderBottomColor: theme.colors.borderLight,
+  },
+  listItemFirst: {
+    paddingTop: theme.spacing.lg,
+  },
+  listItemLast: {
+    borderBottomWidth: 0,
+    paddingBottom: theme.spacing.lg,
+  },
+  iconCircle: {
+    width: 40,
+    height: 40,
+    borderRadius: theme.borderRadius.md,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: theme.spacing.md,
+  },
+  itemContent: {
+    flex: 1,
+    marginRight: theme.spacing.sm,
+  },
+  itemName: {
+    fontSize: 16,
+    fontWeight: '500',
+    color: theme.colors.textPrimary,
+    letterSpacing: -0.2,
+  },
+  itemDescription: {
+    fontSize: 13,
+    color: theme.colors.textSecondary,
+    marginTop: 2,
+    letterSpacing: -0.2,
+  },
+});
